@@ -1,4 +1,4 @@
-from random import randint
+from random import randint, shuffle
 
 class MerkleHellman:
 
@@ -9,15 +9,18 @@ class MerkleHellman:
         self.b = []  # Public Key
         self.maxcharacters = 200
         self.maxbinarylength = self.maxcharacters*8
-        self.keygeneration()
+        self.generate_keys()
 
 
-    def keygeneration(self):
+    def generate_keys(self):
         maxnumberofbits = 50
         sum = 0
         for i in range(self.maxbinarylength):
             self.w.append(sum + randint(1,2**maxnumberofbits))
             sum += self.w[i]
+
+        # shuffle(self.w)                   ################ Use for Hard Knapsack
+
         self.q = sum + randint(1,2**maxnumberofbits)
         self.r = self.q-1
         for i in range(self.maxbinarylength):
@@ -70,21 +73,20 @@ class MerkleHellman:
             letter = binarystring[i:i+8]
             check = int(letter,2)
             if check != 0:
-                plaintext += chr(int(letter,2))
+                plaintext += chr(check)
     
         return plaintext            
             
 
 if __name__ == "__main__":
      
-    obj1 = MerkleHellman()
+    obj = MerkleHellman()
 
-    message = "Hello World"
+    message = input("Enter plain text to be encrypted:\n > ")
+    print("\n\n")
 
-    print("Plain Text: ", message, "\n\n\n")
-
-    encrypted = obj1.encrypt(message)
-    decrypted = obj1.decrypt(encrypted)
+    encrypted = obj.encrypt(message)
+    decrypted = obj.decrypt(encrypted)
 
     print("Encrypted message: ", encrypted, "\n\n\n")
     print("Decrypted message: ", decrypted)
